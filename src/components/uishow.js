@@ -1,7 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
  
-function Table() {
+function UIShow() {
+    const [searchTerm, setSearchTerm] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const result = await fetch(
+            `https://devapp.digitallandscape.com.pk:1009/api/BudgetManagement/GetBudgetSummary`,
+            {
+              method: "POST",
+            }
+          );
+          const userreq = await result.json();
+          debugger
+          setSearchTerm(userreq.data);
+          console.log(userreq);
+  
+        } catch (error) {
+          setError(error);
+        }
+        setIsLoading(false);
+      };
+      
+      fetchData();
+    }, []);
  
     return (
         <table>
@@ -49,10 +77,11 @@ function Table() {
             </thead>
             <hr/>
             <tbody>
-                <tr>
-                    <td >On Invoice</td>
+            {data.map((item, i) => (
+                    <tr key={i}>
+                        <td >On Invoice</td>
                     <td className='borderremove' style={{backgroundColor:'#1f1641'}}> </td>
-                    <td className='sumTotal'>379</td>
+                    <td className='sumTotal'></td>
                     <td  className='sumTotal'>379</td>
                     <td  className='sumTotal'>379</td>
                     <td  className='sumTotal'>379</td>
@@ -64,7 +93,8 @@ function Table() {
                     <td  className='sumTotal'>379</td>
                     <td  className='sumTotal'>379</td>
                     <td  className='sumTotal'>379</td>
-                </tr>
+                    </tr>
+                ))}
                 <tr>
                 <td rowspan={5} className='borderremove' style={{backgroundColor:'#1f1641'}}></td>
                     <td>AGC</td>
@@ -308,4 +338,4 @@ function Table() {
     );
 }
  
-export default Table;
+export default UIShow;
